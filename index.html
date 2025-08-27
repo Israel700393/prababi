@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coração Digital Interativo</title>
+<title>Coração Interativo Definitivo</title>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   body {
@@ -16,49 +16,50 @@
     animation: bgShift 20s ease infinite;
     cursor: none;
   }
-
   @keyframes bgShift {
     0% {background-position: 0% 50%;}
     50% {background-position: 100% 50%;}
     100% {background-position: 0% 50%;}
   }
-
   .particle {
     position: absolute;
-    font-size: 24px;
+    font-size: clamp(12px, 3vw, 24px);
     text-shadow: 0 0 5px #fff, 0 0 10px #ff66aa;
     pointer-events: none;
     animation: fall linear forwards;
   }
-
   @keyframes fall {
     to { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; }
   }
-
   .heart-number {
     position: absolute;
-    font-size: 12px;
+    font-size: clamp(8px, 1.5vw, 14px);
     font-weight: bold;
     color: #ff3366;
     text-shadow: 0 0 5px #fff, 0 0 10px #ff66aa;
     transition: all 1s ease;
   }
-
   .heart-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
   .heart-container.pulse {
     animation: heartPulse 1.5s infinite alternate;
   }
-
   @keyframes heartPulse {
     0% { transform: translate(-50%, -50%) scale(1);}
     50% { transform: translate(-50%, -50%) scale(1.1);}
     100% { transform: translate(-50%, -50%) scale(1);}
+  }
+  .orbit-word {
+    position: absolute;
+    font-size: clamp(10px, 2vw, 20px);
+    font-weight: bold;
+    color: #ff3366;
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff66aa;
+    transform-origin: 0 0;
   }
 </style>
 </head>
@@ -66,92 +67,159 @@
 
 <div class="heart-container" id="heartContainer"></div>
 
+<audio id="heartbeat" src="https://freesound.org/data/previews/522/522664_7273125-lq.mp3" preload="auto"></audio>
+
 <script>
-  const emojisWords = ['I love you','Eu te amo','😍','💖','❤️','💐','🥰','😘','💌','🌸','💝','🌺'];
+const emojisWords = ['I love you','Eu te amo','😍','💖','❤️','💐','🥰','😘','💌','🌸','💝','🌺'];
 
-  Swal.fire({
-    title: '💖 Coração Digital 💖',
-    text: 'Clique em OK e veja o coração se formar!',
-    icon: 'success',
-    confirmButtonText: '✨ Vamos lá ✨',
-    background: '#ffe6f0',
-    confirmButtonColor: '#ff66aa'
-  }).then(() => {
-    createParticles(80);
-    setTimeout(() => createHeart(), 1500);
-  });
+Swal.fire({
+  title: '💖 Coração Definitivo 💖',
+  text: 'Clique em OK e veja a magia acontecer!',
+  icon: 'success',
+  confirmButtonText: '✨ Vamos lá ✨',
+  background: '#ffe6f0',
+  confirmButtonColor: '#ff66aa'
+}).then(() => {
+  document.getElementById('heartbeat').play();
+  createParticles(100);
+  setTimeout(() => createHeart(), 1500);
+  setTimeout(() => createOrbitWords(), 2500);
+});
 
-  // Partículas caindo
-  function createParticles(count) {
-    for (let i = 0; i < count; i++) {
-      const span = document.createElement('span');
-      span.className = 'particle';
-      span.textContent = emojisWords[Math.floor(Math.random() * emojisWords.length)];
-      span.style.left = Math.random() * window.innerWidth + 'px';
-      span.style.animationDuration = (Math.random() * 4 + 3) + 's';
-      span.style.fontSize = (Math.random() * 40 + 20) + 'px';
-      document.body.appendChild(span);
-      setTimeout(() => span.remove(), 7000);
-    }
+// Partículas caindo
+function createParticles(count){
+  for(let i=0;i<count;i++){
+    const span=document.createElement('span');
+    span.className='particle';
+    span.textContent=emojisWords[Math.floor(Math.random()*emojisWords.length)];
+    span.style.left=Math.random()*100+'vw';
+    span.style.animationDuration=(Math.random()*4+3)+'s';
+    span.style.fontSize=(Math.random()*3+1)+'vw';
+    document.body.appendChild(span);
+    setTimeout(()=>span.remove(),7000);
   }
+}
 
-  // Partículas seguindo o mouse
-  document.addEventListener('mousemove', (e) => {
-    for (let i = 0; i < 2; i++) {
-      const span = document.createElement('span');
-      span.className = 'particle';
-      span.textContent = emojisWords[Math.floor(Math.random() * emojisWords.length)];
-      span.style.left = (e.clientX + (Math.random()*30-15)) + 'px';
-      span.style.top = (e.clientY + (Math.random()*30-15)) + 'px';
-      span.style.fontSize = (Math.random()*25+15)+'px';
-      span.style.animationDuration = (Math.random()*3+1)+'s';
-      document.body.appendChild(span);
-      setTimeout(() => span.remove(), 4000);
-    }
+// Partículas seguindo mouse
+document.addEventListener('mousemove',(e)=>{
+  for(let i=0;i<2;i++){
+    const span=document.createElement('span');
+    span.className='particle';
+    span.textContent=emojisWords[Math.floor(Math.random()*emojisWords.length)];
+    span.style.left=(e.clientX+(Math.random()*30-15))+'px';
+    span.style.top=(e.clientY+(Math.random()*30-15))+'px';
+    span.style.fontSize=(Math.random()*3+1)+'vw';
+    span.style.animationDuration=(Math.random()*3+1)+'s';
+    document.body.appendChild(span);
+    setTimeout(()=>span.remove(),4000);
+  }
+});
+
+// Coração formado por números
+function createHeart(){
+  const container=document.getElementById('heartContainer');
+  const heartPoints=[];
+  const scale=Math.min(window.innerWidth,window.innerHeight)/40;
+  for(let t=-Math.PI;t<Math.PI;t+=0.1){
+    let x=16*Math.pow(Math.sin(t),3);
+    let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+    heartPoints.push({x:x*scale,y:y*scale});
+  }
+  heartPoints.forEach(point=>{
+    const num=document.createElement('div');
+    num.className='heart-number';
+    num.textContent=Math.random()>0.5?'0':'1';
+    num.style.left=Math.random()*100+'vw';
+    num.style.top=Math.random()*100+'vh';
+    document.body.appendChild(num);
+
+    setTimeout(()=>{
+      num.style.left=`calc(50% + ${point.x}px)`;
+      num.style.top=`calc(50% + ${point.y}px)`;
+    },Math.random()*2000+500);
+
+    setTimeout(()=>{
+      num.remove();
+      const heartNum=document.createElement('div');
+      heartNum.className='heart-number';
+      heartNum.textContent=Math.random()>0.5?'0':'1';
+      heartNum.style.left=`calc(50% + ${point.x}px)`;
+      heartNum.style.top=`calc(50% + ${point.y}px)`;
+      container.appendChild(heartNum);
+    },3500);
   });
 
-  // Cria coração a partir de números 0 e 1
-  function createHeart() {
-    const container = document.getElementById('heartContainer');
-    const heartPoints = [];
+  setTimeout(()=>container.classList.add('pulse'),4000);
 
-    // Gerar pontos do coração usando fórmula paramétrica
-    for(let t=-Math.PI; t<Math.PI; t+=0.1){
-      let x = 16*Math.pow(Math.sin(t),3);
-      let y = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
-      heartPoints.push({x: x*15, y: y*15});
-    }
-
-    heartPoints.forEach(point => {
-      const num = document.createElement('div');
-      num.className = 'heart-number';
-      num.textContent = Math.random() > 0.5 ? '0':'1';
-      num.style.left = (Math.random()*window.innerWidth)+'px';
-      num.style.top = (Math.random()*window.innerHeight)+'px';
-      document.body.appendChild(num);
-
-      setTimeout(() => {
-        num.style.left = `calc(50% + ${point.x}px)`;
-        num.style.top = `calc(50% + ${point.y}px)`;
-      }, Math.random()*2000 + 500);
-      
-      setTimeout(() => {
-        num.remove();
-        const heartNum = document.createElement('div');
-        heartNum.className = 'heart-number';
-        heartNum.textContent = Math.random() > 0.5 ? '0':'1';
-        heartNum.style.left = `calc(50% + ${point.x}px)`;
-        heartNum.style.top = `calc(50% + ${point.y}px)`;
-        container.appendChild(heartNum);
-      }, 3500);
+  window.addEventListener('resize',()=>{
+    const newScale=Math.min(window.innerWidth,window.innerHeight)/40;
+    container.querySelectorAll('.heart-number').forEach((num,i)=>{
+      const point=heartPoints[i];
+      num.style.left=`calc(50% + ${point.x}px)`;
+      num.style.top=`calc(50% + ${point.y}px)`;
     });
+  });
 
-    // Após formação, fazer o coração pulsar
-    setTimeout(() => {
-      container.classList.add('pulse');
-    }, 4000);
+  // Explosão de corações ao clicar
+  container.addEventListener('click',()=>{
+    const particles=[];
+    container.querySelectorAll('.heart-number').forEach(el=>{
+      const clone=el.cloneNode(true);
+      clone.style.position='absolute';
+      const rect=el.getBoundingClientRect();
+      clone.style.left=rect.left+'px';
+      clone.style.top=rect.top+'px';
+      clone.style.transform='translate(0,0)';
+      clone.style.animation=`explode ${Math.random()*2+1}s ease forwards`;
+      document.body.appendChild(clone);
+      particles.push(clone);
+      el.remove();
+    });
+    container.style.display='none';
+
+    const style=document.createElement('style');
+    style.innerHTML=`@keyframes explode {
+      to {
+        transform: translate3d(${Math.random()*600-300}px,${Math.random()*600-300}px,${Math.random()*600-300}px) rotate(${Math.random()*720}deg);
+        opacity:0; scale:0;
+      }
+    }`;
+    document.head.appendChild(style);
+
+    setTimeout(()=>{
+      particles.forEach(p=>p.remove());
+      container.style.display='block';
+      createHeart();
+    },2000);
+  });
+}
+
+// Palavras girando ao redor do coração
+function createOrbitWords(){
+  const words=['I love you','Eu te amo','😍','💖','❤️','💐','🥰','😘','💌','🌸','💝','🌺'];
+  const container=document.body;
+  const numItems=30;
+  const radius=Math.min(window.innerWidth,window.innerHeight)/4;
+
+  for(let i=0;i<numItems;i++){
+    const div=document.createElement('div');
+    div.className='orbit-word';
+    div.textContent=words[Math.floor(Math.random()*words.length)];
+    container.appendChild(div);
+
+    let angle=Math.random()*2*Math.PI;
+    const speed=(Math.random()*0.5+0.2)*0.02;
+    const animate=()=> {
+      angle+=speed;
+      const x=window.innerWidth/2 + radius*Math.cos(angle) - 10;
+      const y=window.innerHeight/2 + radius*Math.sin(angle) - 10;
+      div.style.left=x+'px';
+      div.style.top=y+'px';
+      requestAnimationFrame(animate);
+    };
+    animate();
   }
-
+}
 </script>
 </body>
 </html>
