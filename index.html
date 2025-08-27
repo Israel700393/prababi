@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coração Digital Interativo</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(270deg, #ffb3c6, #ffe0e6, #ffd1dc, #ff99aa);
+    background-size: 800% 800%;
+    animation: bgShift 20s ease infinite;
+    cursor: none;
+  }
+
+  @keyframes bgShift {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  .particle {
+    position: absolute;
+    font-size: 24px;
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff66aa;
+    pointer-events: none;
+    animation: fall linear forwards;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; }
+  }
+
+  .heart-number {
+    position: absolute;
+    font-size: 12px;
+    font-weight: bold;
+    color: #ff3366;
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff66aa;
+    transition: all 1s ease;
+  }
+
+  .heart-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .heart-container.pulse {
+    animation: heartPulse 1.5s infinite alternate;
+  }
+
+  @keyframes heartPulse {
+    0% { transform: translate(-50%, -50%) scale(1);}
+    50% { transform: translate(-50%, -50%) scale(1.1);}
+    100% { transform: translate(-50%, -50%) scale(1);}
+  }
+</style>
+</head>
+<body>
+
+<div class="heart-container" id="heartContainer"></div>
+
+<script>
+  const emojisWords = ['I love you','Eu te amo','😍','💖','❤️','💐','🥰','😘','💌','🌸','💝','🌺'];
+
+  Swal.fire({
+    title: '💖 Coração Digital 💖',
+    text: 'Clique em OK e veja o coração se formar!',
+    icon: 'success',
+    confirmButtonText: '✨ Vamos lá ✨',
+    background: '#ffe6f0',
+    confirmButtonColor: '#ff66aa'
+  }).then(() => {
+    createParticles(80);
+    setTimeout(() => createHeart(), 1500);
+  });
+
+  // Partículas caindo
+  function createParticles(count) {
+    for (let i = 0; i < count; i++) {
+      const span = document.createElement('span');
+      span.className = 'particle';
+      span.textContent = emojisWords[Math.floor(Math.random() * emojisWords.length)];
+      span.style.left = Math.random() * window.innerWidth + 'px';
+      span.style.animationDuration = (Math.random() * 4 + 3) + 's';
+      span.style.fontSize = (Math.random() * 40 + 20) + 'px';
+      document.body.appendChild(span);
+      setTimeout(() => span.remove(), 7000);
+    }
+  }
+
+  // Partículas seguindo o mouse
+  document.addEventListener('mousemove', (e) => {
+    for (let i = 0; i < 2; i++) {
+      const span = document.createElement('span');
+      span.className = 'particle';
+      span.textContent = emojisWords[Math.floor(Math.random() * emojisWords.length)];
+      span.style.left = (e.clientX + (Math.random()*30-15)) + 'px';
+      span.style.top = (e.clientY + (Math.random()*30-15)) + 'px';
+      span.style.fontSize = (Math.random()*25+15)+'px';
+      span.style.animationDuration = (Math.random()*3+1)+'s';
+      document.body.appendChild(span);
+      setTimeout(() => span.remove(), 4000);
+    }
+  });
+
+  // Cria coração a partir de números 0 e 1
+  function createHeart() {
+    const container = document.getElementById('heartContainer');
+    const heartPoints = [];
+
+    // Gerar pontos do coração usando fórmula paramétrica
+    for(let t=-Math.PI; t<Math.PI; t+=0.1){
+      let x = 16*Math.pow(Math.sin(t),3);
+      let y = -(13*Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+      heartPoints.push({x: x*15, y: y*15});
+    }
+
+    heartPoints.forEach(point => {
+      const num = document.createElement('div');
+      num.className = 'heart-number';
+      num.textContent = Math.random() > 0.5 ? '0':'1';
+      num.style.left = (Math.random()*window.innerWidth)+'px';
+      num.style.top = (Math.random()*window.innerHeight)+'px';
+      document.body.appendChild(num);
+
+      setTimeout(() => {
+        num.style.left = `calc(50% + ${point.x}px)`;
+        num.style.top = `calc(50% + ${point.y}px)`;
+      }, Math.random()*2000 + 500);
+      
+      setTimeout(() => {
+        num.remove();
+        const heartNum = document.createElement('div');
+        heartNum.className = 'heart-number';
+        heartNum.textContent = Math.random() > 0.5 ? '0':'1';
+        heartNum.style.left = `calc(50% + ${point.x}px)`;
+        heartNum.style.top = `calc(50% + ${point.y}px)`;
+        container.appendChild(heartNum);
+      }, 3500);
+    });
+
+    // Após formação, fazer o coração pulsar
+    setTimeout(() => {
+      container.classList.add('pulse');
+    }, 4000);
+  }
+
+</script>
+</body>
+</html>
